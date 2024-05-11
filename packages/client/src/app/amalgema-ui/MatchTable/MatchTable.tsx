@@ -9,21 +9,30 @@ import { Button } from "../../ui/Theme/SkyStrife/Button";
 import { OpenMatches } from "./OpenMatches";
 import { SpectateMatches } from "./SpectateMatches";
 import { HistoricalMatches } from "./HistoricalMatches";
+import { CreatedBy, DisplayNameWithLink } from "../CreatedBy";
+import { encodeMatchEntity } from "../../../encodeMatchEntity";
+import { addressToEntityID } from "../../../mud/setupNetwork";
+import { Hex } from "viem";
+import { PlayerRankings } from "./PlayerRankings";
 import { useEntityQuery } from "@latticexyz/react";
-import { Entity, Has, HasValue, Not, getComponentValue } from "@latticexyz/recs";
+import { Entity, Has, HasValue, Not, getComponentValue, getComponentValueStrict } from "@latticexyz/recs";
 
 enum Tabs {
   Play = "play",
   Spectate = "spectate",
   Historical = "historical",
+  Rankings = "rankings",
 }
 
 const BUGGED_MATCHES = [] as Entity[];
 
+
 export function MatchTable() {
   const {
-    components: { MatchConfig, MatchFinished, MatchJoinable, MatchReady },
+    components: { MatchConfig, MatchFinished, MatchJoinable, MatchReady, Name, MatchRanking},
   } = useAmalgema();
+
+  // for getting player name
 
   const [currentTab, setCurrentTab] = useState<Tabs>(Tabs.Play);
 
@@ -39,6 +48,7 @@ export function MatchTable() {
     Not(MatchReady),
     Not(MatchFinished),
   ]);
+  
   const allMatches = openMatches.concat(pendingMatches).filter((match) => !BUGGED_MATCHES.includes(match));
 
   const joinableMatches = allMatches;
@@ -49,6 +59,27 @@ export function MatchTable() {
     const bTime = getComponentValue(MatchConfig, b)?.startTime ?? 0n;
     return Number(bTime - aTime);
   });
+
+  const allPlayers = []; 
+  console.log("allMatches.length: ", allMatches.length);
+
+  allMatches.forEach((match) => {
+    const matchConfig = getComponentValue(MatchConfig, match);
+    console.log("match: ", match);
+    console.log("matchConfig: ", matchConfig);
+
+    const createdBy = matchConfig.createdBy as Hex;
+    
+    const playerName = getComponentValue(Name, createdBy)?.value ?? createdBy;
+    console.log("playername ", playerName);
+
+    const matchRankings = getComponentValue(MatchRanking, match)?.value ?? [];
+    console.log("matchRankings: ", matchRankings);
+
+    allPlayers.push(playerName);
+  });
+
+  console.log("allPlayers: ", allPlayers);
 
   const liveMatches = useEntityQuery([HasValue(MatchJoinable, { value: false }), Has(MatchConfig), Not(MatchFinished)]);
   const oneHour = 60n * 60n;
@@ -97,6 +128,8 @@ export function MatchTable() {
           {tabButton(Tabs.Spectate, "Spectate", sortedLiveMatches.length)}
 
           {tabButton(Tabs.Historical, "History", historicalMatches.length)}
+
+          {tabButton(Tabs.Rankings, "Rankings", 0)}
         </Card>
 
         <div className="grow" />
@@ -127,6 +160,8 @@ export function MatchTable() {
         {currentTab === Tabs.Play && <OpenMatches matches={joinableMatches} />}
         {currentTab === Tabs.Spectate && <SpectateMatches matches={sortedLiveMatches} />}
         {currentTab === Tabs.Historical && <HistoricalMatches matches={historicalMatches} />}
+        {/* {currentTab === Tabs.Rankings && <PlayerRankings matches={historicalMatches} />} */}
+        {currentTab === Tabs.Rankings && <PlayerRankings matches={allMatches} />} 
       </Card>
     </div>
   );
