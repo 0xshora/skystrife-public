@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Card } from "../../ui/Theme/SkyStrife/Card";
 import { twMerge } from "tailwind-merge";
 import { useSummonIslandModal } from "../SummonIsland";
@@ -16,6 +16,8 @@ import { Hex } from "viem";
 import { PlayerRankings } from "./PlayerRankings";
 import { useEntityQuery } from "@latticexyz/react";
 import { Entity, Has, HasValue, Not, getComponentValue, getComponentValueStrict } from "@latticexyz/recs";
+
+import { fetchRecords } from "../fetchRecords";
 
 enum Tabs {
   Play = "play",
@@ -60,26 +62,34 @@ export function MatchTable() {
     return Number(bTime - aTime);
   });
 
-  const allPlayers = []; 
-  console.log("allMatches.length: ", allMatches.length);
+  useEffect(() => {
+    async function fetchRecordsAsync() {
+      // const { records } = await fetchRecords([config.tables.MatchData]); // have to change
+      console.log("fetchRecordsAsync");
+    }
+    fetchRecordsAsync();
+  }, []);
 
-  allMatches.forEach((match) => {
-    const matchConfig = getComponentValue(MatchConfig, match);
-    console.log("match: ", match);
-    console.log("matchConfig: ", matchConfig);
+  // const allPlayers = []; 
+  // console.log("allMatches.length: ", allMatches.length);
 
-    const createdBy = matchConfig.createdBy as Hex;
+  // allMatches.forEach((match) => {
+  //   const matchConfig = getComponentValue(MatchConfig, match);
+  //   console.log("match: ", match);
+  //   console.log("matchConfig: ", matchConfig);
+
+  //   const createdBy = matchConfig.createdBy as Hex;
     
-    const playerName = getComponentValue(Name, createdBy)?.value ?? createdBy;
-    console.log("playername ", playerName);
+  //   const playerName = getComponentValue(Name, createdBy)?.value ?? createdBy;
+  //   console.log("playername ", playerName);
 
-    const matchRankings = getComponentValue(MatchRanking, match)?.value ?? [];
-    console.log("matchRankings: ", matchRankings);
+  //   const matchRankings = getComponentValue(MatchRanking, match)?.value ?? [];
+  //   console.log("matchRankings: ", matchRankings);
 
-    allPlayers.push(playerName);
-  });
+  //   allPlayers.push(playerName);
+  // });
 
-  console.log("allPlayers: ", allPlayers);
+  // console.log("allPlayers: ", allPlayers);
 
   const liveMatches = useEntityQuery([HasValue(MatchJoinable, { value: false }), Has(MatchConfig), Not(MatchFinished)]);
   const oneHour = 60n * 60n;
