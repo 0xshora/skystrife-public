@@ -93,9 +93,13 @@ export function ViewOnlyMatchRow({ matchEntity }: { matchEntity: Entity }) {
 
 
 export function ViewOnlyPlayerRow( { playerEntity }: { playerEntity: Entity }) {
-  // const {
-  //   components: { MatchConfig, MatchName, MatchAccessControl, MatchIndex, OfficialLevel },
-  // } = useAmalgema();
+  const {
+    components: { Name },
+  } = useAmalgema();
+
+  const playerName = getComponentValue(Name, playerEntity)?.value ?? playerEntity;
+
+  console.log("ViewOnlyPlayerRow playerName: ", playerName);
 
   return (
     <div
@@ -106,8 +110,7 @@ export function ViewOnlyPlayerRow( { playerEntity }: { playerEntity: Entity }) {
         <div className="">
           <div className="flex items-center gap-x-1">
             {/* {matchName} <span className="text-ss-text-x-light">#{matchIndex}</span> */}
-            {/* {playerName} */}
-            shora
+            {playerName}
           </div>
         </div>
       </div>

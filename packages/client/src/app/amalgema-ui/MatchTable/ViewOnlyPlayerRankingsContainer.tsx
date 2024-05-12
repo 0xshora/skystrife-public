@@ -126,7 +126,7 @@ export function ViewOnlyPlayerRankingsContainer ({
 
   const { page, form: paginationForm } = usePagination({ totalItems: allPlayers.length, pageSize });
   
-  const shownPlayers = allMatches.slice((page - 1) * pageSize, page * pageSize);
+  const shownPlayers = allPlayers.slice((page - 1) * pageSize, page * pageSize);
 
   return (
     <div className="grow flex flex-col relative">
