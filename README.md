@@ -7,15 +7,15 @@ Due to the Orb emission schedule, players finishing in third or fourth place oft
 - It serves as a foundation for future plugins, which are discussed in more detail below.
 
 ## Tools Used
-- **skystrife-public**: The official codebase provided by SkyStrife. This project was developed based on it.
-- **Trueskill**: A rating calculation system developed by Minecraft.
+- **[skystrife-public](https://github.com/latticexyz/skystrife-public)**: The official codebase provided by SkyStrife. This project was developed based on it.
+- **[Trueskill](https://trueskill.org/)**: A rating calculation system developed by Microsoft.
 
 ## Demo
 ![Screenshot1](./Screenshot_1.png)
 ![Screenshot2](./Screenshot_2.png)
 
 ## Development Details
-- Developed the `skystrife-api` to fetch historical match data and player information.
+- Developed the `skystrife-api` to fetch historical match data and player information. Please see [here](https://github.com/0xshora/skystrife-api) for details.
 - Utilized Trueskill to calculate ratings based on past match data.
 - Enhanced the `skystrife-public` to display calculated scores on the frontend.
 
