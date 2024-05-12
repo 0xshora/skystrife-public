@@ -103,9 +103,9 @@ export function ViewOnlyPlayerRankingsContainer ({
   // const allPlayers: string[] = []; 
   const allPlayers = players;
   
-  console.log("allPlayers.length: ", players.length);
+  // console.log("allPlayers.length: ", players.length);
 
-  console.log("allPlayers: ", allPlayers);
+  // console.log("allPlayers: ", allPlayers);
 
   const { page, form: paginationForm } = usePagination({ totalItems: allPlayers.length, pageSize });
   
@@ -118,11 +118,13 @@ export function ViewOnlyPlayerRankingsContainer ({
       )}
 
       <div className="flex flex-row gap-x-8 w-full items-center bg-white h-[48px] px-4 text-ss-text-light text-sm uppercase border-b border-ss-stroke">
-        <div className="min-w-[120px] text-left">Player Name</div>
+        
+        
+        <div className="w-[120px] text-center">Rank</div>
 
         {/* <div className="w-[120px] text-center">Date Played</div> */}
-
-        <div className="flex justify-center items-center w-[120px] shrink-0">Ranking Score</div>
+        <div className="flex-grow text-left pl-4 shrink-0">Player Name</div>
+        <div className="w-[240px] text-center shrink-0">Ranking Score</div>
 
         {/* <div className="w-[240px] text-left shrink-0">Players</div> */}
       </div>
@@ -135,9 +137,14 @@ export function ViewOnlyPlayerRankingsContainer ({
         className={`absolute left-0 overflow-y-auto w-full`}
       >
         {/* { <div>shora</div> } */}
-        {shownPlayers.map((player) => {
+        {shownPlayers.map((player, index) => React.createElement(playerRowComponent, {
+          player,
+          rank: index + 1 + (page - 1) * pageSize,  // 現在のページとインデックスから実際のランキングを計算
+          key: player.player
+        }))}
+        {/* {shownPlayers.map((player) => {
           return React.createElement(playerRowComponent, { player, key: player.player });
-        })}
+        })} */}
 
         {/* {
           <div>player a</div>

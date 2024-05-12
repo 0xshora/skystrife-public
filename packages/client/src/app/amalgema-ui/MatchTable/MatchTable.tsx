@@ -157,7 +157,7 @@ export function MatchTable() {
 
           {tabButton(Tabs.Historical, "History", historicalMatches.length)}
 
-          {tabButton(Tabs.Rankings, "Rankings", 0)}
+          {tabButton(Tabs.Rankings, "Rankings", players.length )}
         </Card>
 
         <div className="grow" />

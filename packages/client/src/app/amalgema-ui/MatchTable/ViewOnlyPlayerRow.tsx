@@ -1,4 +1,5 @@
 import { Entity, getComponentValue } from "@latticexyz/recs";
+import React, { useState, useEffect } from 'react';
 import { useAmalgema } from "../../../useAmalgema";
 import { ALLOW_LIST_SYSTEM_ID, SEASON_PASS_ONLY_SYSTEM_ID } from "../../../constants";
 import { SeasonPassIcon } from "../SeasonPassIcon";
@@ -94,37 +95,55 @@ export function ViewOnlyMatchRow({ matchEntity }: { matchEntity: Entity }) {
   );
 }
 
+type NameEntry = {
+  id: string;
+  value: string;
+};
 
-export function ViewOnlyPlayerRow( { player }: { player: PlayerRate }) {
-  const {
-    components: { Name },
-  } = useAmalgema();
+export function ViewOnlyPlayerRow( { player, rank }: { player: PlayerRate, rank: number}) {
+  // const {
+  //   components: { Name },
+  // } = useAmalgema();　// should use this Name component for production states
 
-  // const playerName = getComponentValue(Name, playerEntity)?.value ?? playerEntity;
-  const playerName = getComponentValue(Name, addressToEntityID(player.player))?.value ?? player.player;
+  const [nameMap, setNameMap] = useState<Record<string, string>>({});
 
-  const playerAddress = player.player;
+  useEffect(() => {
+    fetch('../../../public/names/names.json')
+      .then(response => response.json())
+      .then(data => {
+        const map: Record<string, string> = {};
+        data.forEach((item: NameEntry) => {
+          const address = item.id.replace(/^0x000000000000000000000000/, '0x').toLowerCase();;
+          map[address] = item.value;
+        });
+        setNameMap(map);
+      });
+  }, []);
+
+  const playerAddress = player.player.toLowerCase();
   const mu = player.mu;
-
-  console.log("ViewOnlyPlayerRow playerName: ", playerName);
+  
+  const playerName = nameMap[playerAddress] ?? playerAddress;
 
   return (
     <div
       key={`${player}-table-row`}
       className="flex gap-x-8 h-[72px] w-full border-b border-ss-stroke bg-white px-4 items-center text-ss-text-x-light transition-all hover:bg-ss-bg-0"
     >
+      <div className={`w-[120px] text-center shrink-0 ${rank <= 3 ? 'text-2xl' : 'text-base'}`}>
+        {rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank}
+      </div>
+      
       <div className="grow min-w-[120px] text-left flex gap-x-2 items-center text-ss-text-default overflow-clip whitespace-nowrap">
         <div className="">
-          <div className="flex items-center gap-x-1">
-            {/* {matchName} <span className="text-ss-text-x-light">#{matchIndex}</span> */}
-            {playerAddress}
+          <div className="flex-grow text-left pl-4">
+            { playerName } 
           </div>
         </div>
       </div>
 
       <div className="w-[240px] text-center shrink-0">
-        {/* score */}
-        { mu }
+        { mu.toFixed(2)  }
       </div>
     </div>
   );
