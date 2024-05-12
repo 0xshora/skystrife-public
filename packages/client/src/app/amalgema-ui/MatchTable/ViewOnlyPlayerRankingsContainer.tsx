@@ -6,6 +6,8 @@ import { LoadingSpinner } from "../../ui/Theme/SkyStrife/Icons/LoadingSpinner";
 import { JoinModal } from "./JoinModal";
 import { useAmalgema } from "../../../useAmalgema";
 import { Hex } from "viem";
+import { PlayerRate } from "./MatchTable";
+
 
 
 // export function PlayerRankingsContainer({
@@ -84,12 +86,12 @@ import { Hex } from "viem";
 // }
 
 export function ViewOnlyPlayerRankingsContainer ({
-  allMatches,
+  players,
   playerRowComponent,
   header,
 }: {
-  allMatches: Entity[];
-  playerRowComponent: React.ComponentType<{ playerEntity: Entity }>;
+  players: PlayerRate[];
+  playerRowComponent: React.ComponentType<{ player: PlayerRate }>;
   header?: React.ReactNode;
 }) {
   const {
@@ -98,72 +100,12 @@ export function ViewOnlyPlayerRankingsContainer ({
 
   const pageSize = 10;
   // convert all mathces to all players
-  const allPlayers: string[] = []; 
+  // const allPlayers: string[] = []; 
+  const allPlayers = players;
   
-  console.log("allMatches.length: ", allMatches.length);
-
-  // calculate all players Elo score
-  allMatches.forEach((match) => {
-    const matchConfig = getComponentValue(MatchConfig, match);
-    if (matchConfig) {
-      console.log("match: ", match);
-      console.log("matchConfig: ", matchConfig);
-
-      // have to change from createdBy user to all player addresses
-      const createdBy = matchConfig.createdBy as Hex;
-      const matchRanking = getComponentValue(MatchRanking, match)?.value ?? [];
-
-      // const matchRanking = [
-      //   { id: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"},
-      // //   // { id: "0x2", name: "Bob", eloScore: 1150 },
-      // //   // { id: "0x3", name: "Charlie", eloScore: 1100 },
-      // //   // { id: "0x4", name: "Diana", eloScore: 1050 }
-      // ];
-      console.log("matchRanking: ", matchRanking);
-
-      matchRanking.map((playerEntity, i) => {
-        // playerEntity's rank is i
-        // stack matchRanking Results or calculate Elo score here
-
-        console.log("playerEntity: ", playerEntity);
-        console.log("rank: ", i);
-
-        // const player = getComponentValue(Name, playerEntity)?.value ?? playerEntity;
-        // allPlayers.push(player);
-      });
-
-      // const Player1 = ranking.makePlayer()
-      // const Player2 = ranking.makePlayer()
-      // const Player3 = ranking.makePlayer()
-
-      
-      
-
-      // return (
-      //   <div className="w-full flex flex-wrap">
-      //     {matchRanking.map((playerEntity, i) => {
-      //       return (
-      //         <span key={`rank-${i}`} className="w-1/2 flex items-baseline gap-x-1 text-ss-text-default overflow-auto">
-      //           {i + 1} <PlayerName entity={encodeMatchEntity(matchEntity, playerEntity)} />
-      //         </span>
-      //       );
-      //     })}
-      //   </div>
-      // );
-      
-      const playerName = getComponentValue(Name, createdBy)?.value ?? createdBy;
-      
-      // console.log("playername ", playerName);
-
-      // const matchRankings = getComponentValue(MatchRanking, match)?.value ?? [];
-      // console.log("matchRankings: ", matchRankings);
-
-      allPlayers.push(playerName);
-    }
-  });
+  console.log("allPlayers.length: ", players.length);
 
   console.log("allPlayers: ", allPlayers);
-
 
   const { page, form: paginationForm } = usePagination({ totalItems: allPlayers.length, pageSize });
   
@@ -192,8 +134,9 @@ export function ViewOnlyPlayerRankingsContainer ({
         }}
         className={`absolute left-0 overflow-y-auto w-full`}
       >
-        {shownPlayers.map((playerEntity) => {
-          return React.createElement(playerRowComponent, { playerEntity, key: playerEntity });
+        {/* { <div>shora</div> } */}
+        {shownPlayers.map((player) => {
+          return React.createElement(playerRowComponent, { player, key: player.player });
         })}
 
         {/* {

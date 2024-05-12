@@ -17,7 +17,8 @@ import { PlayerRankings } from "./PlayerRankings";
 import { useEntityQuery } from "@latticexyz/react";
 import { Entity, Has, HasValue, Not, getComponentValue, getComponentValueStrict } from "@latticexyz/recs";
 
-import { fetchRecords } from "../fetchRecords";
+import player_ratings from "../../../public/ratings/player_ratings.json";
+// import { fetchRecords } from "../fetchRecords";
 
 enum Tabs {
   Play = "play",
@@ -27,6 +28,16 @@ enum Tabs {
 }
 
 const BUGGED_MATCHES = [] as Entity[];
+
+export interface PlayerRate {
+  address: string;
+  mu: number;
+  sigma: number;
+}
+
+interface PlayerRankingsProps {
+  players: PlayerRate[];
+}
 
 
 export function MatchTable() {
@@ -62,13 +73,20 @@ export function MatchTable() {
     return Number(bTime - aTime);
   });
 
+  // have to work on this
+  const [players, setPlayers] = useState<PlayerRate[]>([]);
+
   useEffect(() => {
-    async function fetchRecordsAsync() {
-      // const { records } = await fetchRecords([config.tables.MatchData]); // have to change
-      console.log("fetchRecordsAsync");
-    }
-    fetchRecordsAsync();
+    setPlayers(player_ratings as PlayerRate[]);  // ローカルの JSON データを使用
   }, []);
+
+  // useEffect(() => {
+  //   async function fetchRecordsAsync() {
+  //     // const { records } = await fetchRecords([config.tables.MatchData]); // have to change
+  //     console.log("fetchRecordsAsync");
+  //   }
+  //   fetchRecordsAsync();
+  // }, []);
 
   // const allPlayers = []; 
   // console.log("allMatches.length: ", allMatches.length);
@@ -171,7 +189,7 @@ export function MatchTable() {
         {currentTab === Tabs.Spectate && <SpectateMatches matches={sortedLiveMatches} />}
         {currentTab === Tabs.Historical && <HistoricalMatches matches={historicalMatches} />}
         {/* {currentTab === Tabs.Rankings && <PlayerRankings matches={historicalMatches} />} */}
-        {currentTab === Tabs.Rankings && <PlayerRankings matches={allMatches} />} 
+        {currentTab === Tabs.Rankings && <PlayerRankings players={players} />} 
       </Card>
     </div>
   );

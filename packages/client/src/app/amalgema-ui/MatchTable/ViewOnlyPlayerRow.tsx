@@ -7,6 +7,9 @@ import { CreatedBy, DisplayNameWithLink } from "../CreatedBy";
 import { encodeMatchEntity } from "../../../encodeMatchEntity";
 import { ConfirmedCheck } from "../../ui/Theme/SkyStrife/Icons/ConfirmedCheck";
 import { DateTime } from "luxon";
+import { PlayerRate } from "./MatchTable";
+import { addressToEntityID } from "../../../mud/setupNetwork";
+
 
 const PlayerName = ({ entity }: { entity: Entity }) => {
   const {
@@ -92,32 +95,36 @@ export function ViewOnlyMatchRow({ matchEntity }: { matchEntity: Entity }) {
 }
 
 
-export function ViewOnlyPlayerRow( { playerEntity }: { playerEntity: Entity }) {
+export function ViewOnlyPlayerRow( { player }: { player: PlayerRate }) {
   const {
     components: { Name },
   } = useAmalgema();
 
-  const playerName = getComponentValue(Name, playerEntity)?.value ?? playerEntity;
+  // const playerName = getComponentValue(Name, playerEntity)?.value ?? playerEntity;
+  const playerName = getComponentValue(Name, addressToEntityID(player.player))?.value ?? player.player;
+
+  const playerAddress = player.player;
+  const mu = player.mu;
 
   console.log("ViewOnlyPlayerRow playerName: ", playerName);
 
   return (
     <div
-      key={`${playerEntity}-table-row`}
+      key={`${player}-table-row`}
       className="flex gap-x-8 h-[72px] w-full border-b border-ss-stroke bg-white px-4 items-center text-ss-text-x-light transition-all hover:bg-ss-bg-0"
     >
       <div className="grow min-w-[120px] text-left flex gap-x-2 items-center text-ss-text-default overflow-clip whitespace-nowrap">
         <div className="">
           <div className="flex items-center gap-x-1">
             {/* {matchName} <span className="text-ss-text-x-light">#{matchIndex}</span> */}
-            {playerName}
+            {playerAddress}
           </div>
         </div>
       </div>
 
       <div className="w-[240px] text-center shrink-0">
         {/* score */}
-        <div>0</div>
+        { mu }
       </div>
     </div>
   );
