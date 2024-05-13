@@ -1,0 +1,5 @@
+Due to the Orb emission schedule, players finishing in third or fourth place often experience a net loss in Orbs, making it challenging for newcomers and beginners to casually engage in matches. To address this, we have developed a system to objectively assess player skills, laying the groundwork for future improvements in matchmaking.
+
+For more details: https://github.com/0xshora/skystrife-public/blob/main/README.md
+Github (skystrife-public): https://github.com/0xshora/skystrife-public
+Github (skystrife-api): https://github.com/0xshora/skystrife-api
