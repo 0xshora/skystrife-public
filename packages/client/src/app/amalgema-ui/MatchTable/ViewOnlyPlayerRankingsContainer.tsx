@@ -124,7 +124,7 @@ export function ViewOnlyPlayerRankingsContainer ({
 
         {/* <div className="w-[120px] text-center">Date Played</div> */}
         <div className="flex-grow text-left pl-4 shrink-0">Player Name</div>
-        <div className="w-[240px] text-center shrink-0">Ranking Score</div>
+        <div className="w-[240px] text-center shrink-0">Rating Score</div>
 
         {/* <div className="w-[240px] text-left shrink-0">Players</div> */}
       </div>
